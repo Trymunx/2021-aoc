@@ -16,12 +16,12 @@ export function main ([year, day, part]) {
         return (($) => {
             if (Array.isArray($) && $.length >= 2 && Array.isArray($[0]) && $[0].length >= 2 && $[0][0] == '#ok' && $[1] == '1') {
                 var numbers = $[0][1]
-                return Console.log (solvePartOne (numbers))
+                return solvePartOne (numbers)
             }
 
             if (Array.isArray($) && $.length >= 2 && Array.isArray($[0]) && $[0].length >= 2 && $[0][0] == '#ok' && $[1] == '2') {
                 var numbers = $[0][1]
-                return Console.log (solvePartTwo (numbers))
+                return solvePartTwo (numbers)
             }
 
             if (Array.isArray($) && $.length >= 2 && Array.isArray($[0]) && $[0].length >= 2 && $[0][0] == '#err') {
@@ -31,12 +31,12 @@ export function main ([year, day, part]) {
 
             if (Array.isArray($) && $.length >= 2 && $[1] == 'test1') {
                 
-                return Console.log (solvePartOne (test))
+                return solvePartOne (test)
             }
 
             if (Array.isArray($) && $.length >= 2 && $[1] == 'test2') {
                 
-                return Console.log (solvePartTwo (test))
+                return solvePartTwo (test)
             }
 
             return Console.warn (`Unknown part: "${part}".`)

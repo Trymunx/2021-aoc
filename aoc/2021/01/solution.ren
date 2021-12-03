@@ -22,12 +22,12 @@ pub fun main = [ year, day, part ] => {
     ]
     
     ret when [ input, part ]
-        is [ #ok numbers, '1' ] => Console.log (solvePartOne numbers)
-        is [ #ok numbers, '2' ] => Console.log (solvePartTwo numbers)
-        is [ #err e, _ ]         => Console.error e
-        is [ _, 'test1' ]              => Console.log (solvePartOne test)
-        is [ _, 'test2' ]              => Console.log (solvePartTwo test)
-        else                     => Console.warn `Unknown part: "${part}".`
+        is [ #ok numbers, '1' ] => solvePartOne numbers
+        is [ #ok numbers, '2' ] => solvePartTwo numbers
+        is [ #err e, _ ]        => Console.error e
+        is [ _, 'test1' ]       => solvePartOne test
+        is [ _, 'test2' ]       => solvePartTwo test
+        else                    => Console.warn `Unknown part: "${part}".`
 }
 
 fun solvePartOne = numbers => {

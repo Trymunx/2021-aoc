@@ -20,11 +20,11 @@ pub fun main = [ year, day, part ] => {
     ]
 
     ret when [ input, part ]
-      is [ #ok numbers, '1' ] => Console.log (solvePartOne numbers)
-      is [ #ok numbers, '2' ] => Console.log (solvePartTwo numbers)
+      is [ #ok numbers, '1' ] => solvePartOne numbers
+      is [ #ok numbers, '2' ] => solvePartTwo numbers
       is [ #err e, _ ]        => Console.error e
-      is [ _, 'test1' ]       => Console.log (solvePartOne (Array.filterMap parseInput test))
-      is [ _, 'test2' ]       => Console.log (solvePartTwo (Array.filterMap parseInput test))
+      is [ _, 'test1' ]       => solvePartOne (Array.filterMap parseInput test)
+      is [ _, 'test2' ]       => solvePartTwo (Array.filterMap parseInput test)
       else                    => Console.warn `Unknown part: "${part}".`
 }
 
