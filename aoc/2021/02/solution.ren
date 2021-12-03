@@ -3,7 +3,7 @@ import 'ren/console' as Console
 import 'ren/file' as File
 import 'ren/string' as String
 import 'ren/result' as Result
-import 'ren/maybe' exposing { #just, #nothing }
+import 'ren/maybe' as Maybe
 import 'ren/math' as Math
 
 pub fun main = [ year, day, part ] => {
@@ -32,9 +32,7 @@ fun parseInput = line => {
   let [dir, amountString] = String.split " " line
   let amount = String.toNumber amountString
 
-  ret when [amount, dir]
-    is [#just x, dir] => #just ([dir, x])
-    is [#nothing, dir] => #nothing
+  ret Maybe.map (fun x => [dir, x]) amount
 }
 
 fun solvePartOne = input => {

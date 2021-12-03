@@ -3,7 +3,7 @@ import * as Console from '/Users/alexhouseago/dev/2021-aoc/aoc/stdlib/ren/consol
 import * as File from '/Users/alexhouseago/dev/2021-aoc/aoc/stdlib/ren/file.ren.mjs'
 import * as String from '/Users/alexhouseago/dev/2021-aoc/aoc/stdlib/ren/string.ren.mjs'
 import * as Result from '/Users/alexhouseago/dev/2021-aoc/aoc/stdlib/ren/result.ren.mjs'
-import {$just, $nothing} from  '/Users/alexhouseago/dev/2021-aoc/aoc/stdlib/ren/maybe.ren.mjs'
+import * as Maybe from '/Users/alexhouseago/dev/2021-aoc/aoc/stdlib/ren/maybe.ren.mjs'
 import * as Math from '/Users/alexhouseago/dev/2021-aoc/aoc/stdlib/ren/math.ren.mjs'
 
 export function main ([year, day, part]) {
@@ -54,18 +54,7 @@ function parseInput (line) {
 
         var amount = String.toNumber (amountString)
 
-        return (($) => {
-            if (Array.isArray($) && $.length >= 2 && Array.isArray($[0]) && $[0].length >= 2 && $[0][0] == '#just') {
-                var x = $[0][1]
-                var dir = $[1]
-                return $just ([dir, x])
-            }
-
-            if (Array.isArray($) && $.length >= 2 && Array.isArray($[0]) && $[0].length >= 1 && $[0][0] == '#nothing') {
-                var dir = $[1]
-                return $nothing
-            }
-        })([amount, dir])
+        return Maybe.map ((x) => [dir, x]) (amount)
     })()
 }
 
