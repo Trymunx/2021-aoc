@@ -59,3 +59,13 @@ export function take(n) {
             : $just(string.substring(0, n))
     }
 }
+
+export function toInt(radix) {
+    return (string) => {
+        const number = parseInt(string, radix);
+
+        return isNaN(number)
+            ? ['#nothing']
+            : ['#just', number]
+    }
+}

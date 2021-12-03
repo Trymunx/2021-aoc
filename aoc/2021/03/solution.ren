@@ -1,0 +1,60 @@
+import 'ren/array' as Array
+import 'ren/console' as Console
+import 'ren/file' as File
+import 'ren/string' as String
+import 'ren/result' as Result
+import 'ren/maybe' as Maybe
+import 'ren/math' as Math
+import 'ren/bitwise' as Bitwise
+
+pub fun main = [ year, day, part ] => {
+    let parse = String.split "\\n" >> Array.filterMap parseInput
+    let input = File.open './input.txt' { sync: true } |> Result.map parse
+
+    let test = [
+      "00100",
+      "11110",
+      "10110",
+      "10111",
+      "10101",
+      "01111",
+      "00111",
+      "11100",
+      "10000",
+      "11001",
+      "00010",
+      "01010"
+    ]
+
+    ret when [ input, part ]
+      is [ #ok numbers, '1' ] => solvePartOne numbers
+      is [ #ok numbers, '2' ] => solvePartTwo numbers
+      is [ #err e, _ ]        => Console.error e
+      is [ _, 'test1' ]       => solvePartOne (Array.filterMap parseInput test)
+      is [ _, 'test2' ]       => solvePartTwo (Array.filterMap parseInput test)
+      else                    => Console.warn `Unknown part: "${part}".`
+}
+
+fun parseInput = line => {
+  ret String.split "" line
+}
+
+fun doThing = current splitLine => {
+  ret Array.indexedMap (fun i el => [current[i]..., el]) splitLine
+}
+
+fun solvePartOne = input => {
+  let a = Console.log (Array.foldl doThing [[], [], [], [], []] input)
+}
+
+fun solvePartTwo = input => {
+  ret Console.log input
+}
+
+fun zip5 = [a, b, c, d, e] [f, g, h, i , j] => {
+  ret 
+}
+
+fun zip = a b => {
+  let zipped = Array.indexedMap (fun i el => [el, b[i]])
+}
