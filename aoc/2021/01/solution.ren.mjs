@@ -29,18 +29,18 @@ export function main ([year, day, part]) {
                 return Console.error (e)
             }
 
-            if (Array.isArray($) && $.length >= 2 && $[1] == '1') {
-                var test = $[0]
+            if (Array.isArray($) && $.length >= 2 && $[1] == 'test1') {
+                
                 return Console.log (solvePartOne (test))
             }
 
-            if (Array.isArray($) && $.length >= 2 && $[1] == '2') {
-                var test = $[0]
+            if (Array.isArray($) && $.length >= 2 && $[1] == 'test2') {
+                
                 return Console.log (solvePartTwo (test))
             }
 
             return Console.warn (`Unknown part: "${part}".`)
-        })([test, part])
+        })([input, part])
     })()
 }
 
@@ -78,26 +78,18 @@ function solvePartTwo (numbers) {
 
 function avgThree (count) {
     return (numbers) => {
-        if (Array.isArray(numbers) && numbers.length >= 6) {
+        if (Array.isArray(numbers) && numbers.length >= 4) {
             var a = numbers[0]
             var b = numbers[1]
             var c = numbers[2]
-            var x = numbers[3]
-            var y = numbers[4]
-            var z = numbers[5]
-            if (a + b + c < x + y + z) {
-                return avgThree (count + 1) (Array.tail.numbers)
-            }
-        }
+            var d = numbers[3]
+            return (() => {
+                var newCount = a + b + c < b + c + d
+                    ? count + 1
+                    : count
 
-        if (Array.isArray(numbers) && numbers.length >= 6) {
-            var a = numbers[0]
-            var b = numbers[1]
-            var c = numbers[2]
-            var x = numbers[3]
-            var y = numbers[4]
-            var z = numbers[5]
-            return avgThree (count) (Array.tail (numbers))
+                return avgThree (newCount) (Array.tail (numbers))
+            })()
         }
 
         return count

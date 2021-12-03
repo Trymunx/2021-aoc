@@ -21,12 +21,12 @@ pub fun main = [ year, day, part ] => {
       263
     ]
     
-    ret when [ test, part ]
+    ret when [ input, part ]
         is [ #ok numbers, '1' ] => Console.log (solvePartOne numbers)
         is [ #ok numbers, '2' ] => Console.log (solvePartTwo numbers)
         is [ #err e, _ ]         => Console.error e
-        is [ test, '1' ]              => Console.log (solvePartOne test)
-        is [ test, '2' ]              => Console.log (solvePartTwo test)
+        is [ _, 'test1' ]              => Console.log (solvePartOne test)
+        is [ _, 'test2' ]              => Console.log (solvePartTwo test)
         else                     => Console.warn `Unknown part: "${part}".`
 }
 
@@ -46,7 +46,9 @@ fun solvePartTwo = numbers => { ret avgThree 0 numbers }
 
 fun avgThree = count numbers => {
   ret when numbers
-    is [a, b, c, x, y, z] if (a + b + c) < (x + y + z) => avgThree (count + 1) (Array.tail.numbers)
-    is [a, b, c, x, y, z] => avgThree count (Array.tail numbers)
+    is [a, b, c, d] => {
+       let newCount = if (a + b + c) < (b + c + d) then count + 1 else count
+       ret avgThree newCount (Array.tail numbers)
+    }
     else => count
 }
