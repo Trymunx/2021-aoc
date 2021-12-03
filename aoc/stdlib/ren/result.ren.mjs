@@ -1,4 +1,5 @@
-import * as Maybe from '/Users/alexhouseago/dev/2021-aoc/aoc/stdlib/ren/maybe.ren.mjs'
+import {not} from  './logic.ren.mjs'
+import * as Maybe from './maybe.ren.mjs'
 
 export function $ok (a) {
     return ['#ok', a]
@@ -57,3 +58,14 @@ export function withDefault (b) {
 }
 
 export var unwrap = withDefault ()
+
+export function isOk (result) {
+    if (Array.isArray(result) && result.length >= 2 && result[0] == '#ok') {
+        
+        return true
+    }
+
+    return false
+}
+
+export var isErr = (($) => not (isOk ($)))
