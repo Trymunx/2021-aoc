@@ -1,0 +1,52 @@
+import 'ren/array' as Array
+import 'ren/console' as Console
+import 'ren/file' as File
+import 'ren/string' as String
+import 'ren/result' as Result
+
+pub fun main = [ year, day, part ] => {
+    let parse = String.split "\\n" >> Array.filterMap String.toNumber
+    let input = File.open './input.txt' { sync: true } |> Result.map parse
+
+    let test = [
+      199,
+      200,
+      208,
+      210,
+      200,
+      207,
+      240,
+      269,
+      260,
+      263
+    ]
+    
+    ret when [ test, part ]
+        is [ #ok numbers, '1' ] => Console.log (solvePartOne numbers)
+        is [ #ok numbers, '2' ] => Console.log (solvePartTwo numbers)
+        is [ #err e, _ ]         => Console.error e
+        is [ test, '1' ]              => Console.log (solvePartOne test)
+        is [ test, '2' ]              => Console.log (solvePartTwo test)
+        else                     => Console.warn `Unknown part: "${part}".`
+}
+
+fun solvePartOne = numbers => {
+  let count = 0
+  ret doRecThing count numbers
+}
+
+fun doRecThing = count numbers => {
+  ret when numbers
+    is [x, y] if y > x => doRecThing (count + 1) (Array.tail numbers)
+    is [x, y] => doRecThing count (Array.tail numbers)
+    else => count
+}
+
+fun solvePartTwo = numbers => { ret avgThree 0 numbers }
+
+fun avgThree = count numbers => {
+  ret when numbers
+    is [a, b, c, x, y, z] if (a + b + c) < (x + y + z) => avgThree (count + 1) (Array.tail.numbers)
+    is [a, b, c, x, y, z] => avgThree count (Array.tail numbers)
+    else => count
+}
