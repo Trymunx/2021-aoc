@@ -1,0 +1,61 @@
+import 'ren/array' as Array
+import 'ren/console' as Console
+import 'ren/file' as File
+import 'ren/string' as String
+import 'ren/result' as Result
+import 'ren/maybe' exposing { #just, #nothing }
+import 'ren/math' as Math
+
+pub fun main = [ year, day, part ] => {
+    let parse = String.split "\\n" >> Array.filterMap parseInput
+    let input = File.open './input.txt' { sync: true } |> Result.map parse
+
+    let test = [
+      "forward 5",
+      "down 5",
+      "forward 8",
+      "up 3",
+      "down 8",
+      "forward 2"
+    ]
+
+    ret when [ input, part ]
+      is [ #ok numbers, '1' ] => Console.log (solvePartOne numbers)
+      is [ #ok numbers, '2' ] => Console.log (solvePartTwo numbers)
+      is [ #err e, _ ]        => Console.error e
+      is [ _, 'test1' ]       => Console.log (solvePartOne (Array.filterMap parseInput test))
+      is [ _, 'test2' ]       => Console.log (solvePartTwo (Array.filterMap parseInput test))
+      else                    => Console.warn `Unknown part: "${part}".`
+}
+
+fun parseInput = line => {
+  let [dir, amountString] = String.split " " line
+  let amount = String.toNumber amountString
+
+  ret when [amount, dir]
+    is [#just x, dir] => #just ([dir, x])
+    is [#nothing, dir] => #nothing
+}
+
+fun solvePartOne = input => {
+  ret Array.foldl Math.mul 1 (Array.foldl applySimpleMotion [0, 0] input)
+}
+
+fun applySimpleMotion = [down, forward] [dir, amount] => {
+  ret when dir
+    is "forward"  => [down, forward + amount]
+    is "down"     => [down + amount, forward]
+    is "up"       => [down - amount, forward]
+}
+
+fun solvePartTwo = input => {
+  let [depth, dist] = Array.foldl applyAimMotion [0, 0, 0] input
+  ret depth * dist
+}
+
+fun applyAimMotion = [down, forward, aim] [dir, amount] => {
+  ret when dir
+    is "forward"  => [down + (amount * aim), forward + amount, aim]
+    is "down"     => [down, forward, aim + amount]
+    is "up"       => [down, forward, aim - amount]
+}
