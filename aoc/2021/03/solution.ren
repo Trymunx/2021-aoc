@@ -39,22 +39,23 @@ fun parseInput = line => {
   ret String.split "" line
 }
 
-fun doThing = current splitLine => {
-  ret Array.indexedMap (fun i el => [current[i]..., el]) splitLine
+fun lineToArr = array splitLine => {
+  ret Array.map2 Array.cons splitLine array
+}
+
+// This only finds the mode of arrays of 0s and 1s
+fun mode = arr => {
+  let zeros = Array.filter Logic.not arr
+  ret if Array.length zeros > (Array.length arr) / 2 then 0 else 1
 }
 
 fun solvePartOne = input => {
-  let a = Console.log (Array.foldl doThing [[], [], [], [], []] input)
+  let splitLines = Array.map (String.split "") input
+  let combinedByPos = Array.foldl lineToArr [[], [], [], [], []] input
+
+  ret Array.map mode combinedByPos
 }
 
 fun solvePartTwo = input => {
   ret Console.log input
-}
-
-fun zip5 = [a, b, c, d, e] [f, g, h, i , j] => {
-  ret 
-}
-
-fun zip = a b => {
-  let zipped = Array.indexedMap (fun i el => [el, b[i]])
 }
