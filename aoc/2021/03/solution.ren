@@ -6,6 +6,7 @@ import 'ren/result' as Result
 import 'ren/maybe' as Maybe
 import 'ren/math' as Math
 import 'ren/bitwise' as Bitwise
+import 'ren/compare' as Compare
 
 pub fun main = [ year, day, part ] => {
     let parse = String.trim >> String.split "\\n"
@@ -35,14 +36,15 @@ pub fun main = [ year, day, part ] => {
       else                    => Console.warn `Unknown part: "${part}".`
 }
 
-fun lineToArr = array splitLine => {
-  ret Array.map2 Array.cons splitLine array
+fun lineToCol = array line => {
+  ret Array.map2 Array.cons line array
 }
 
 // This only finds the mode of arrays of 0s and 1s
-fun mode = arr => {
+fun mode = roundDir arr => {
   let zeros = Array.filter (fun x => x == "0") arr
-  ret if Array.length zeros > (Array.length arr) / 2 then 0 else 1
+  let comparison = if roundDir == "up" then Compare.gte else Compare.gt
+  ret if comparison (Array.length zeros) ((Array.length arr) / 2) then "0" else "1"
 }
 
 fun solvePartOne = input => {
@@ -50,8 +52,8 @@ fun solvePartOne = input => {
   let bitSize = Math.pow 2 lineLen - 1
   
   let modeValue = Array.map (String.split "") input
-    |> Array.foldl lineToArr (Array.repeat lineLen [])
-    |> Array.map mode
+    |> Array.foldl lineToCol (Array.repeat lineLen [])
+    |> Array.map (mode "down")
     |> String.join ""
     |> String.toInt 2
 
@@ -61,5 +63,19 @@ fun solvePartOne = input => {
 }
 
 fun solvePartTwo = input => {
-  ret Console.log input
+  let searchArr = Array.map (String.split "") input
+  ret oxygenRating searchArr 0
+}
+
+fun oxygenRating = searchArr digit => {
+  let cols = Array.foldl lineToCol (Array.repeat (Array.length searchArr[0]) []) searchArr
+  let m = mode "up" cols[digit]
+
+  ret when (Array.length searchArr)
+    is 1 => searchArr[0]
+    else => oxygenRating (filterByNthDigit digit m searchArr) (digit + 1)
+}
+
+fun filterByNthDigit = index match arr => {
+  ret Array.filter (fun x => x[index] == match) arr
 }
