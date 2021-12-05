@@ -55,7 +55,7 @@ fun solvePartOne = input => {
     |> String.join ""
     |> String.toInt 2
 
-  ret Maybe.unwrap modeValue
+  ret when modeValue
     is #just x => x * Math.xor bitSize x
     else => #nothing
 }
