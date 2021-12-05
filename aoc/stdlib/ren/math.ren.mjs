@@ -39,3 +39,10 @@ export function mod(x) {
         return x % y
     }
 }
+
+// xor : Number -> Number -> Number
+export function xor(x) {
+    return (y) => {
+        return x ^ y
+    }
+}

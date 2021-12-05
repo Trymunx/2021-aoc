@@ -8,7 +8,7 @@ import 'ren/math' as Math
 import 'ren/bitwise' as Bitwise
 
 pub fun main = [ year, day, part ] => {
-    let parse = String.split "\\n" >> Array.filterMap parseInput
+    let parse = String.trim >> String.split "\\n"
     let input = File.open './input.txt' { sync: true } |> Result.map parse
 
     let test = [
@@ -30,13 +30,9 @@ pub fun main = [ year, day, part ] => {
       is [ #ok numbers, '1' ] => solvePartOne numbers
       is [ #ok numbers, '2' ] => solvePartTwo numbers
       is [ #err e, _ ]        => Console.error e
-      is [ _, 'test1' ]       => solvePartOne (Array.filterMap parseInput test)
-      is [ _, 'test2' ]       => solvePartTwo (Array.filterMap parseInput test)
+      is [ _, 'test1' ]       => solvePartOne test
+      is [ _, 'test2' ]       => solvePartTwo test
       else                    => Console.warn `Unknown part: "${part}".`
-}
-
-fun parseInput = line => {
-  ret String.split "" line
 }
 
 fun lineToArr = array splitLine => {
@@ -45,15 +41,23 @@ fun lineToArr = array splitLine => {
 
 // This only finds the mode of arrays of 0s and 1s
 fun mode = arr => {
-  let zeros = Array.filter Logic.not arr
+  let zeros = Array.filter (fun x => x == "0") arr
   ret if Array.length zeros > (Array.length arr) / 2 then 0 else 1
 }
 
 fun solvePartOne = input => {
-  let splitLines = Array.map (String.split "") input
-  let combinedByPos = Array.foldl lineToArr [[], [], [], [], []] input
+  let lineLen = Array.length input[0]
+  let bitSize = Math.pow 2 lineLen - 1
+  
+  let modeValue = Array.map (String.split "") input
+    |> Array.foldl lineToArr (Array.repeat lineLen [])
+    |> Array.map mode
+    |> String.join ""
+    |> String.toInt 2
 
-  ret Array.map mode combinedByPos
+  ret Maybe.unwrap modeValue
+    is #just x => x * Math.xor bitSize x
+    else => #nothing
 }
 
 fun solvePartTwo = input => {

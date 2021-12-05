@@ -73,3 +73,7 @@ export function toInt(radix) {
             : ['#just', number]
     }
 }
+
+export function trim(string) {
+    return string.trim()
+}
