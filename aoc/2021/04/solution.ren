@@ -1,0 +1,66 @@
+import 'ren/array' as Array
+import 'ren/console' as Console
+import 'ren/file' as File
+import 'ren/string' as String
+import 'ren/result' as Result
+import 'ren/maybe' as Maybe
+import 'ren/math' as Math
+import 'ren/bitwise' as Bitwise
+import 'ren/compare' as Compare
+
+pub fun main = [ year, day, part ] => {
+    let parse = String.trim >> String.split "\\n"
+    let input = File.open './input.txt' { sync: true } |> Result.map parse
+
+    let test = [
+      "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1",
+      "              ",
+      "22 13 17 11  0",
+      " 8  2 23  4 24",
+      "21  9 14 16  7",
+      " 6 10  3 18  5",
+      " 1 12 20 15 19",
+      "              ",
+      " 3 15  0  2 22",
+      " 9 18 13 17  5",
+      "19  8  7 25 23",
+      "20 11 10 24  4",
+      "14 21 16 12  6",
+      "              ",
+      "14 21 17 24  4",
+      "10 16 15  9 19",
+      "18  8 23 26 20",
+      "22 11 13  6  5",
+      " 2  0 12  3  7"
+    ]
+
+    ret when [ input, part ]
+      is [ #ok numbers, '1' ] => solvePartOne numbers
+      is [ #ok numbers, '2' ] => solvePartTwo numbers
+      is [ #err e, _ ]        => Console.error e
+      is [ _, 'test1' ]       => solvePartOne test
+      is [ _, 'test2' ]       => solvePartTwo test
+      else                    => Console.warn `Unknown part: "${part}".`
+}
+
+fun parseInput = lines => {
+  let sequence = String.split "," lines[0]
+  let boards = Array.foldr addToBoards [] (Array.tail lines)
+  ret [ sequence, boards ]
+}
+
+fun addToBoards = boards line => {
+  ret if (String.trim line) == ""
+    then
+      Array.join [] boards
+    else
+      Array.join [boards[0]..., line] (Array.tail boards)
+}
+
+fun solvePartOne = input => {
+  ret parseInput input
+}
+
+fun solvePartTwo = input => {
+  ret input
+}
