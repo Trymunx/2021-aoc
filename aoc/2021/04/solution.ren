@@ -44,21 +44,31 @@ pub fun main = [ year, day, part ] => {
 }
 
 fun parseInput = lines => {
-  let sequence = String.split "," lines[0]
-  let boards = Array.foldr addToBoards [] (Array.tail lines)
+  let firstLine = Maybe.withDefault "" (Array.head lines)
+  let sequence = String.split "," firstLine
+  let parseLine = fun boardLines line => {
+    let l = line |> String.split " " |> Array.filter (Compare.notEq "")
+    ret when Array.length l
+      is 0 => Array.cons [] boardLines
+      else => {
+        let thing = Array.head boardLines |> Maybe.withDefault []
+        ret Array.cons (Array.cons l thing) (Array.tail boardLines)
+      }
+  }
+  let boards = Array.foldr parseLine [] (Array.tail lines) |> Array.tail
   ret [ sequence, boards ]
 }
 
-fun addToBoards = boards line => {
-  ret if (String.trim line) == ""
-    then
-      Array.join [] boards
-    else
-      Array.join [boards[0]..., line] (Array.tail boards)
-}
-
 fun solvePartOne = input => {
-  ret parseInput input
+  let [ sequence, boards ] = parseInput input
+  let boardSize =  boards
+    |> Array.head // First board (array of lines)
+    |> Maybe.withDefault [[]]
+    |> Array.head // First line of board (array of strings)
+    |> Maybe.withDefault 0
+    |> Array.length
+
+  ret [sequence, boardSize, boards]
 }
 
 fun solvePartTwo = input => {
