@@ -41,9 +41,9 @@ fun lineToCol = array line => {
 }
 
 // This only finds the mode of arrays of 0s and 1s
-fun mode = roundDir arr => {
+fun mode = arr => {
   let zeros = Array.filter (fun x => x == "0") arr
-  let comparison = if roundDir == "up" then Compare.gte else Compare.gt
+  let comparison = Compare.gt
   ret if comparison (Array.length zeros) ((Array.length arr) / 2) then "0" else "1"
 }
 
@@ -53,7 +53,7 @@ fun solvePartOne = input => {
   
   let modeValue = Array.map (String.split "") input
     |> Array.foldl lineToCol (Array.repeat lineLen [])
-    |> Array.map (mode "down")
+    |> Array.map mode
     |> String.join ""
     |> String.toInt 2
 
@@ -64,18 +64,32 @@ fun solvePartOne = input => {
 
 fun solvePartTwo = input => {
   let searchArr = Array.map (String.split "") input
-  ret oxygenRating searchArr 0
+  let oxy =  sensorRating 0 "oxygen" searchArr
+  let co2 =  sensorRating 0 "co2" searchArr
+  ret when [ oxy, co2 ]
+    is [ #just o, #just c ] => o * c
+    else => #nothing
 }
 
-fun oxygenRating = searchArr digit => {
-  let cols = Array.foldl lineToCol (Array.repeat (Array.length searchArr[0]) []) searchArr
-  let m = mode "up" cols[digit]
+fun sensorRating = digit sensor searchArr => {
+  let cols = arrToCols searchArr
 
   ret when (Array.length searchArr)
-    is 1 => searchArr[0]
-    else => oxygenRating (filterByNthDigit digit m searchArr) (digit + 1)
+    is 1 => String.join "" searchArr[0] |> String.toInt 2
+    else => mode cols[digit] 
+      |> (fun x => if sensor == "oxygen" then x else inverse x)
+      |> filterByNthDigit digit searchArr
+      |> sensorRating (digit + 1) sensor
 }
 
-fun filterByNthDigit = index match arr => {
+fun arrToCols = arr => {
+  ret Array.foldl lineToCol (Array.repeat (Array.length arr[0]) []) arr
+}
+
+fun filterByNthDigit = index arr match => {
   ret Array.filter (fun x => x[index] == match) arr
+}
+
+fun inverse = n => {
+  ret if n == "1" then "0" else "1"
 }
